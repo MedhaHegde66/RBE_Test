@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule Engine</title>
+</head>
+<body>
+    <h1>Rule Engine Application</h1>
+
+    <h2>Create a Rule</h2>
+    <input type="text" id="rule_string" placeholder="Enter rule (e.g., age > 30 AND department = 'Sales')">
+    <button onclick="createRule()">Create Rule</button>
+
+    <h2>Evaluate Rule</h2>
+    <input type="text" id="eval_rule_string" placeholder="Enter rule to evaluate">
+    <input type="text" id="eval_data" placeholder="Enter data as JSON (e.g., {'age': 35})">
+    <button onclick="evaluateRule()">Evaluate Rule</button>
+
+    <script>
+        function createRule() {
+            const rule_string = document.getElementById('rule_string').value;
+            fetch('/create_rule', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rule_string: rule_string })
+            })
+            .then(response => response.json())
+            .then(data => alert('Rule Created: ' + JSON.stringify(data)));
+        }
+
+        function evaluateRule() {
+            const rule_string = document.getElementById('eval_rule_string').value;
+            const eval_data = document.getElementById('eval_data').value;
+
+            fetch('/evaluate_rule', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rule_string: rule_string, data: JSON.parse(eval_data) })
+            })
+            .then(response => response.json())
+            .then(data => alert('Evaluation Result: ' + JSON.stringify(data.result)));
+        }
+    </script>
+</body>
+</html>
